@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  web:
+    image: host
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+     - .:/app
+    environment:
+      - REDIS_HOST=redis_server
+      - REDIS_PORT=6379
+      - REDIS_DB=1
+    ports:
+     - 8000:8000
+    depends_on:
+      - redis
+      - migration
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+  migration:
+    image: migration
+    build:
+      context: .
+      dockerfile: Dockerfile.migrations
+    volumes:
+    - .:/app
